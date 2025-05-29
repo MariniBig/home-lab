@@ -6,7 +6,7 @@
 |------|-------------|------------------|-----------------------------------------------------------------------------|
 | 10   | MGMT        | 192.168.10.0/24  | Gerenciamento (switch, APs, OPNsense, NVR)                                  |
 | 20   | INFRA       | 192.168.20.0/24  | Servidores internos, DNS, DHCP, containers                                 |
-| 30   | IOT         | 192.168.30.0/24  | Dispositivos IoT: câmeras, TVs, Alexa, automação                           |
+| 30   | IOT         | 192.168.30.0/24  | Dispositivos IoT: TVs, Alexa, automação                           |
 | 40   | USER        | 192.168.40.0/24  | Dispositivos pessoais: notebooks, PCs, smartphones                         |
 | 50   | GUEST       | 192.168.50.0/24  | Wi-Fi para visitantes (somente internet)                                   |
 | 60   | CAMERAS     | 192.168.60.0/24  | Câmeras IP conectadas ao NVR                                               |
