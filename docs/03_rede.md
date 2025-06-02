@@ -1,5 +1,9 @@
 # Rede e Topologia
 
+## Gerenciador
+
+- Omada
+
 ## VLANs e Segmentação
 
 | VLAN | Nome        | Faixa IP         | Finalidade                                                                  |

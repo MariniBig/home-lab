@@ -13,23 +13,25 @@ Servidor de arquivos, armazenamento de backups, containers, VMs leves e comparti
 - **Memória RAM:** 64GB DDR5 Corsair Vengeance (2x32GB, 5200MHz, CL40)
 - **Fonte:** Corsair SF-L Series SF1000L (1000W, 80 Plus Gold, Modular)
 - **Placa de Vídeo:** NVIDIA Quadro T400 (PNY, 4GB GDDR6, PCIe 3.0)
+- **HBA:** H1110 81Y4494 SAS-2 ROKE (ZFS, FreeNAS, unRAID, RAID Expansor)
+- **PCI-E RJ45:** RTL8125B 2.5Gbps expasion card
 
 ## 💾 Armazenamento
 
-- **5x HDD 3TB** (marcas variadas)
-- **2x SSD 480GB Kingston Enterprise**
-- **3x NVMe 240GB Kingston**
+- **5x HDD 3TB** 2x WD-Purple, 2x Seagate Barracuda, 1x Toshiba
+- **2x SDD 480GB** Kingston Enterprise
+- **3x NVME 240GB** Kingston
 
 ## 📡 Conectividade
 
-- Conectado via cabo de rede 2.5 Gbps ao switch TP-Link SG3428
+- Conectado via cabo de rede 5 Gbps ao switch TP-Link SG3428 - Link Aggregation, 2x 2.5Gbps
 - Acesso via VLAN INFRA (192.168.20.0/24)
 
 ## 🔧 Sistema Operacional
 
-*(Adicionar posteriormente: TrueNAS Scale, Proxmox, Unraid ou outro utilizado)*
+*Proxmox*
 
 ## 🔐 Observações
 
-- Backups automáticos para volume separado.
 - Monitoramento de saúde dos discos via SMART.
+- Monitoramento de vms, uso de cpu, memoria via Grafana.
