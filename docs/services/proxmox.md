@@ -1,102 +1,38 @@
-# 🖥️ Proxmox VE - Instalação Padronizada
+Primeira coisa a fazer é obter a iso do Proxmox e criar o dispositivo de instalação.
 
-## 1️⃣ **Pré-Instalação**
-### Requisitos Mínimos
-- **Hardware**: CPU x64 com virtualização, 8GB RAM, SSD 128GB+
-- **Rede**: IP estático, gateway e DNS configurados
-- **ISO**: [Proxmox VE 8.1](https://www.proxmox.com/en/downloads) (verifique SHA256)
-
-### Preparação da Mídia
-```bash
-# Linux (dd)
-dd if=proxmox-ve_8.1.iso of=/dev/sdX bs=4M status=progress
-
-# Windows (Rufus)
-1. Selecione ISO → Modo DD → Iniciar
-```
-
----
-
-## 2️⃣ **Instalação**
-### Passo a Passo
-1. **Boot** no dispositivo (USB/ISO)
-2. **Selecione disco** (ZFS para SSDs, ext4 para HDDs)
-3. **Configure rede**:
-   - Hostname: `proxmox-01`
-   - IP: `192.168.1.10/24`
-   - Gateway: `192.168.1.1`
-4. **Defina senha root** e e-mail
-
----
-
-## 3️⃣ **Pós-Instalação Padrão**
-### Script Automatizado ([Fonte](https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install))
-```bash
-wget -O post-install.sh https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
-chmod +x post-install.sh
-nano post-install.sh  # Revise as configurações!
-./post-install.sh
-```
-
-### 🔧 **Customizações Obratórias**
-Edite o script para:
-```bash
-# Variáveis recomendadas:
-DISABLE_SUBSCRIPTION_POPUP="true"
-OPTIMIZE_ZFS="true"
-INSTALL_FAIL2BAN="true"
-```
-
----
-
-## 4️⃣ **Configuração de Cluster**
-### Em Todos os Nós
-```bash
-# Nó Master:
-pvecm create cluster-name
-
-# Nós Adicionais:
-pvecm add IP_DO_MASTER
-```
-
-### Verificação
-```bash
-pvecm status
-corosync-cmapctl | grep members
-```
-
----
-
-## 5️⃣ **Otimizações Padrão**
-### ZFS (SSD/NVMe)
-```bash
-zfs set compression=lz4 rpool
-zfs set atime=off rpool
-```
-
-### Kernel
-```bash
-echo "vm.swappiness=10" >> /etc/sysctl.conf
-sysctl -p
-```
-
----
-
-## 6️⃣ **Backup Inicial**
-```bash
-# Configurações críticas
-tar czf /backup/proxmox-config_$(date +%F).tar.gz /etc/pve /etc/network/interfaces
-```
-
----
-
-## ⚠️ **Checklist Pós-Instalação**
-- [ ] Teste migração de VMs entre nós
-- [ ] Configure backup automático (`vzdump`)
-- [ ] Atualize todos os nós (`apt update && apt dist-upgrade -y`)
-
----
-
-## 📌 **Links Úteis**
-- [Documentação Oficial](https://pve.proxmox.com/wiki/Main_Page)
-- [Tuning ZFS](https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/)
+Acesse o site do proxmox, em: https://www.proxmox.com/en/
+   - Va em Downloads, em Latest Releases, e selecione o donwload que você quer.
+   - No meu caso é o Proxmox VE 8.4 ISO Installer, desse link: https://enterprise.proxmox.com/iso/proxmox-ve_8.4-1.iso
+Depois disso, você precisa de uma ferramenta para criar o inicializavel, e um disco para isso.
+   - Para disco eu usei um pendrive de 64gb, mas provavelmente qualquer disco de 4-8gb deve ser suficiente.
+   - Baixar um programa pra gravar a iso no disco, eu uso o Rufus: https://rufus.ie/pt_BR/
+   - Criar o disco de instalação, todo processo deve levar no maximo 5 minutos, tudo vai depender da sua conexão com a internet e da velocidade do sistema.
+Proximo passo é conectar o pendrive de instalação no computador que voce pretende instalar o Proxmox, e ligar o mesmo.
+   - Você precisa acessar a BIOS, para ativar a virtualização e para selecionar o pendrive como disco de incialização, geralmente é DEL ou F12, mas isso pode variar de maquina pra maquina. Pra mim é F12.
+   - Nessa BIOS, dentro de CPU Configuration, tem a configuração "Intel (VMS) Virtualization Technology" e eu selecionei Enable, e na parte de Boot, coloquei o Pendrive como proximo boot.
+   - A instalação é simples e pratica, só seguir o que fala nas telas, mas o que eu selecionei é:
+      - Install Proxmox VE (Graphical)
+      - Aceitei a licença de uso
+      - Selecionei o disco SSD de 480GB, para instalação do Proxmox, aqui é onde você faz a configuração de mirror pra instalação se quiser, não vai ser o caso desse computador
+      - Digitar o pais, Brazil, a Time zone, America/Sao_Paulo, e Brazil-Portuguese no layout do teclado
+      - Defini a senha do servidor, pode ser encontrada no arquivo "senhas" e coloquei o e-mail: marini@dumar.log.br
+      - Não mudei a interface de rede, mas dei um nome: pve.marini.home e um ip fixo: 192.168.0.200/24, coloquei o gateway: 192.168.0.1 e o DNS: 192.168.0.1
+      - Em seguida ele tras um resumo da instalação, se estiver tudo certo clicar em Install
+      - Conforme ele for reiniciando, remover o pendrive.
+Em seguida vamos acessar via WebUI a instalação.
+   - No meu caso vai ser: https://192.168.0.200:8006/
+   - Digitar o usuario: root
+   - Digitar a senha criada anteriormente
+A primeira coisa que eu faço ao instalar o proxmox é executar um script da comunidade, que pré configura algumas coisas.
+   - Nesse link você pode pegar o script: https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
+   - Esse é o script: bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/post-pve-install.sh)"
+   - Abra o "Shell", clique com o botão direito do mouse e clique em colar e aperte Enter
+   - Vai aparecer pra selecionar se tu quer iniciar o script, aperte Y e Enter
+   - A primeira seleção é pra corrigir as fontes de atualização e instalação do Proxmox, selecionei Yes
+   - A segunda vai desabilitar o repositório Enterprise, se você não tem assinatura do Proxmox, selecionei Yes
+   - A terceira vai habilitar o repositório para você que não é inscrito, selecionei Yes
+   - A quarta é se você vai selecionar o ceph, pra habilitar os dois repositórios, aqui selecionei No
+   - Se você vai fazer testes das novas versões e ferramentas do Proxmox, eu não vou então selecionei No
+   - Nessa parte você habilita ou desabilita alta disponibilidade, se você vai ter mais que um servidor Proxmox, e vai ter VMs que podem trocar de um pro outro, selecione pra habilitar, se não, pode desabilitar, vou deixar habilitado
+   - Agora ele vai pedir se voce quer atualizar o sistema agora, e eu coloquei que sim
+   - Terminando tudo ele vai pedir pra reiniciar o sistema, e tambem selecionei sim.
